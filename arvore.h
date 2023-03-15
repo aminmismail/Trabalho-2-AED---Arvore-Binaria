@@ -1,6 +1,6 @@
 #ifndef ARVORE_H
 #define ARVORE_H
-//#include "binario.h"
+#include "binario.h"
 
 struct no {
   int id;
@@ -12,9 +12,5 @@ struct no {
   struct no* esq;
   struct no* dir;
 };
-
-
-
-typedef struct no* arvore;
 
 #endif //ARVORE_H

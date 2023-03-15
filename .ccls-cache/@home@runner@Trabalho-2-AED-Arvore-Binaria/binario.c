@@ -1,4 +1,5 @@
 #include "binario.h"
+#include "arvore.h"
 
 //Cria uma lista nova em arquivo
 //Pre-condicao: arquivo aberto para leitura/escrita
@@ -34,10 +35,10 @@ void escreve_cabecalho(FILE* arq, cabecalho* cab){
 //Pre-condicao: arquivo deve estar aberto e ser um arquivo de lista
 //              pos deve ser uma posicao valida da lista
 //Pos-condicao: ponteiro para no lido e retornado
-no* le_no(FILE* arq, int pos) {
-  no* x = malloc(sizeof(no));
-  fseek(arq,sizeof(cabecalho)+ pos*sizeof(no),SEEK_SET);
-  fread(x,sizeof(no),1,arq);
+struct no* le_no(FILE* arq, int pos) {
+  struct no* x = malloc(sizeof(struct no));
+  fseek(arq,sizeof(cabecalho)+ pos*sizeof(struct no),SEEK_SET);
+  fread(x,sizeof(struct no),1,arq);
   return x;
 }
 
@@ -45,9 +46,9 @@ no* le_no(FILE* arq, int pos) {
 //Pre-condicao: arquivo deve estar aberto e ser um arquivo de lista
 //              pos deve ser uma posicao valida do arquivo
 //Pos-condicao: no escrito no arquivo
-void escreve_no(FILE* arq, no* x, int pos){
-  fseek(arq,sizeof(cabecalho) + pos*sizeof(no), SEEK_SET);
-  fwrite(x,sizeof(no),1,arq);
+void escreve_no(FILE* arq, struct no* x, int pos){
+  fseek(arq,sizeof(cabecalho) + pos*sizeof(struct no), SEEK_SET);
+  fwrite(x,sizeof(struct no),1,arq);
 }
 
 //Abre um arquivo binario
@@ -55,10 +56,8 @@ void escreve_no(FILE* arq, no* x, int pos){
 //Pos-condicao: Retorna o ponteiro para o arquivo binario
 FILE* openBin(char* path){
     FILE *fwr;
-    do{
-        fwr = fopen(path, "a+b");
-    }
-    while(loadFile(path, fwr));
+    fwr = fopen(path, "rb+");
+    if(fwr == NULL) fwr = fopen(path, "wb+");
     return fwr;
 }
 
