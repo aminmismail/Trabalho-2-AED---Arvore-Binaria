@@ -27,7 +27,7 @@ int main() {
       
       switch (opcao) {
           case 1: //cadastra
-              
+              cadastraProduto();
               break;
           case 2: //remove
               
@@ -47,10 +47,10 @@ int main() {
           case 7: //imprime arvore binaria
               
               break;
-          case 8:
+          case 8: //imprime lista de livres
 
               break;
-          case 9:
+          case 9: //
 
               break;
           case 0:
