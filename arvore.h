@@ -2,7 +2,7 @@
 #define ARVORE_H
 #include "binario.h"
 
-struct no {
+typedef struct no {
   int id;
   char nome[51];
   char marca[31];
@@ -11,6 +11,10 @@ struct no {
   double preco;
   struct no* esq;
   struct no* dir;
-};
+}Produto;
+
+void insereProduto();
+void cadastraProduto();
+
 
 #endif //ARVORE_H

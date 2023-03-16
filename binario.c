@@ -57,7 +57,10 @@ void escreve_no(FILE* arq, struct no* x, int pos){
 FILE* openBin(char* path){
     FILE *fwr;
     fwr = fopen(path, "rb+");
-    if(fwr == NULL) fwr = fopen(path, "wb+");
+    if(fwr == NULL){
+      fwr = fopen(path, "wb+");
+      cria_lista_vazia(fwr);
+    }
     return fwr;
 }
 

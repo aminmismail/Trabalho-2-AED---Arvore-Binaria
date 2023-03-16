@@ -50,7 +50,7 @@ int main() {
           case 8: //imprime lista de livres
 
               break;
-          case 9: //
+          case 9: //Operacao em lote
 
               break;
           case 0:
