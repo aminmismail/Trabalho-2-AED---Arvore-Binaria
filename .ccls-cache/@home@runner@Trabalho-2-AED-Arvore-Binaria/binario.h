@@ -3,7 +3,7 @@
 
 #include "arvore.h"
 #include <stdio.h>
-#include <stdlib.h>
+
 
 typedef struct {
     int pos_cabeca; //posicao do inicio da lista

@@ -1,6 +1,7 @@
 #include "binario.h"
 #include "arvore.h"
 
+
 //Cria uma lista nova em arquivo
 //Pre-condicao: arquivo aberto para leitura/escrita
 //Pos-condicao: arquivo e inicializado com uma lista vazia

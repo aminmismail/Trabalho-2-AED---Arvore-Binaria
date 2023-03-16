@@ -1,4 +1,7 @@
 #include "arvore.h"
+#include "binario.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void cadastraProduto(){
   Produto* p = (Produto*) malloc(sizeof(Produto));
@@ -19,5 +22,13 @@ void cadastraProduto(){
 }
 
 void insereProduto(Produto* p){
+  FILE* f;
+  f = openBin("./dados.bin");
+  cabecalho *cab = le_cabecalho(f);
+  if(cab->pos_livre != -1){
+    fseek(f, sizeof(cab) + , int whence)
+  }
   
+  fclose(f);
+  free(cab);
 }
