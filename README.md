@@ -7,6 +7,8 @@ O programa tem como propósito funcionar como um software gerenciador de produto
 - Estoque
 - Preço
 
+Os produtos cadastrados são todos armazenados em arquivo binário, utilizando a ideia de arvore binaria, onde cada produto seria considerado um nó e tendo um nó a direita e a esquerda (ou não).
+
 As funcionalidades disponíveis são:
 - Cadastrar produto
 - Remover produto
