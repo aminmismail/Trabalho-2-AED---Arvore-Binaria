@@ -14,12 +14,22 @@ typedef struct no {
 }Produto;
 
 void insereProduto();
+
 void cadastraProduto();
+
 void lerProdutos();
+
 Produto* buscaProduto();
+
 void imprimeProduto();
+
 Produto *buscaNoAnt();
+
 void atualizaPreco();
+
 void atualizaEstoque();
+
+void incluiLote();
+
 
 #endif //ARVORE_H

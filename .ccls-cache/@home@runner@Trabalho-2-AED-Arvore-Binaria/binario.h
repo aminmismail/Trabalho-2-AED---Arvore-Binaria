@@ -30,9 +30,10 @@ void escreve_cabecalho(FILE* arq, cabecalho* cab);
 //Pos-condicao: Registro dos itens nos arquivos binarios
 void loadPath();
 
-//Abre um arquivo binario
+//Abre o arquivo binario "dados.bin"
 //Pre-condicao: Um caminho para um arquivo existente
 //Pos-condicao: Retorna o ponteiro para o arquivo binario
 FILE* openBin();
+
 
 #endif //BINARIO_H

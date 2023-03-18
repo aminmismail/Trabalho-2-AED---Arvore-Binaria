@@ -77,7 +77,7 @@ void loadPath(){
         fr = fopen(path, "r");
     }
     while(fr == NULL);
-    
+    incluiLote(fr);
     printf("\n");
     fclose(fr);
 }

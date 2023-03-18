@@ -2,11 +2,11 @@
 #include "binario.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void cadastraProduto(){
+  FILE *f = openBin();
   Produto* p = (Produto*) malloc(sizeof(Produto));
-  //Verificar se ja existe produto com mesmo ID
-  //Utiliza funcao buscarProduto(int id)
   printf("Informe o codigo do produto: ");
   scanf("%d%*c", &p->id);
   printf("Informe o nome do produto: ");
@@ -21,7 +21,11 @@ void cadastraProduto(){
   scanf("%lf", &p->preco);
   p->dir = -1;
   p->esq = -1;
-  insereProduto(p);
+  if(buscaProduto(f, p->id) == NULL){ //verifica se ja existe mesmo ID
+    fclose(f);
+    insereProduto(p);
+  }
+  else printf("ID já existente! Insira outro ID\n");
   free(p);
 }
 
@@ -99,7 +103,7 @@ Produto *buscaProduto(FILE* f, int info){
   cabecalho* cab = le_cabecalho(f);
   fseek(f, sizeof(Produto)*cab->pos_cabeca, SEEK_CUR);
   fread(p, sizeof(Produto), 1, f);
-  while(p->dir != -1 || p->esq != -1){ //mudado de and para or
+  while(p->dir != -1 || p->esq != -1){
     if(p->esq != -1 && info < p->id){ //esq
       fseek(f, sizeof(cabecalho) + sizeof(Produto)*p->esq, SEEK_SET);
     }
@@ -167,9 +171,43 @@ void atualizaEstoque(){
     printf("Digite o novo estoque: ");
     scanf("%d",&stock);
     p->estoque = stock;
-    fseek(f, 0-sizeof(Produto), SEEK_CUR);
+    fseek(f, 0 - sizeof(Produto), SEEK_CUR);
     fwrite(p, sizeof(Produto), 1, f);
   }
   fclose(f);
+  free(p);
+}
+
+void incluiLote(FILE *fr){
+    char text[200], *aux, *pt;
+    Produto *p = (Produto*) malloc(sizeof(Produto));
+    while(fscanf(fr,"%[^\n]%*c", text) != EOF){
+      char* token = strtok(text,";"); //pega o tipo
+      if(strcmp(token,"I") == 0){ //I;25;Leite;Parmalat;bebidas;358;7,70
+        p->id = atoi(strtok(NULL,";"));
+        
+        strcpy(p->nome,strtok(NULL,";"));
+        strcpy(p->marca,strtok(NULL,";"));
+        strcpy(p->categoria,strtok(NULL,";"));
+        for(pt = aux = strtok(NULL,";");*aux != 0; aux++) if(*aux == ',') *aux = '.';
+        insereProduto(p);
+      }
+      else if(strcmp(token,"R") == 0){
+        beb->id = atoi(strtok(NULL,";"));
+        strcpy(beb->nome,strtok(NULL,";"));
+        strcpy(beb->disp,strtok(NULL,";"));
+        for(p = aux = strtok(NULL,";");*aux != 0; aux++) if(*aux == ',') *aux = '.';
+        beb->preco = atof(p);
+        gravaBebida(beb);
+      }
+      else if(strcmp(token,"A") == 0){
+        ex->id = atoi(strtok(NULL,";"));
+        strcpy(ex->nome,strtok(NULL,";"));
+        strcpy(ex->disp,strtok(NULL,";"));
+        for(p = aux = strtok(NULL,";");*aux != 0; aux++) if(*aux == ',') *aux = '.';
+        ex->preco = atof(p);
+        gravaExtra(ex);
+      }
+    }
   free(p);
 }

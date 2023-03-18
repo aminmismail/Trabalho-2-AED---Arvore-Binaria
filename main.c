@@ -27,10 +27,10 @@ int main() {
       scanf("%d", &opcao);
       
       switch (opcao) {
-          case 1: //cadastra
+          case 1: //cadastra produto
               cadastraProduto();
               break;
-          case 2: //remove
+          case 2: //remove produto
               //busca pelo id
               //remove do filho do no pai
               //coloca o reg no cabecalho
