@@ -1,8 +1,7 @@
 #ifndef BINARIO_H
 #define BINARIO_H
-
-#include "arvore.h"
 #include <stdio.h>
+#include "arvore.h"
 
 
 typedef struct {
@@ -31,14 +30,9 @@ void escreve_cabecalho(FILE* arq, cabecalho* cab);
 //Pos-condicao: Registro dos itens nos arquivos binarios
 void loadPath();
 
-//Verifica se o arquivo existe
-//Pre-condicao: Um caminho para um arquivo
-//Pos-condicao: Retorna se o arquivo e valido ou nao
-int loadFile(char* path, FILE* file);
-
 //Abre um arquivo binario
 //Pre-condicao: Um caminho para um arquivo existente
 //Pos-condicao: Retorna o ponteiro para o arquivo binario
-FILE* openBin(char* path);
+FILE* openBin();
 
 #endif //BINARIO_H

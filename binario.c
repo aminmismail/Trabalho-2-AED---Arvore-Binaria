@@ -1,11 +1,11 @@
 #include "binario.h"
 #include "arvore.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 
 //Cria uma lista nova em arquivo
 //Pre-condicao: arquivo aberto para leitura/escrita
 //Pos-condicao: arquivo e inicializado com uma lista vazia
-
 void cria_lista_vazia(FILE* arq){
   cabecalho * cab = (cabecalho*) malloc(sizeof(cabecalho));
   cab->pos_cabeca = -1;
@@ -55,25 +55,14 @@ void escreve_no(FILE* arq, struct no* x, int pos){
 //Abre um arquivo binario
 //Pre-condicao: Um caminho para um arquivo existente
 //Pos-condicao: Retorna o ponteiro para o arquivo binario
-FILE* openBin(char* path){
+FILE* openBin(){
     FILE *fwr;
-    fwr = fopen(path, "rb+");
+    fwr = fopen("./dados.bin", "rb+");
     if(fwr == NULL){
-      fwr = fopen(path, "wb+");
+      fwr = fopen("./dados.bin", "wb+");
       cria_lista_vazia(fwr);
     }
     return fwr;
-}
-
-//Verifica se o arquivo existe
-//Pre-condicao: Um caminho para um arquivo
-//Pos-condicao: Retorna se o arquivo e valido ou nao
-int loadFile(char* path, FILE* file){
-    if(file == NULL){
-        printf("Falha ao ler arquivo!\n\n");
-        return 1;
-    }
-    else return 0;
 }
 
 //Le o caminho do arquivo passado por input, e cadastra os itens nele
@@ -87,7 +76,7 @@ void loadPath(){
         scanf("%s%*c", path);
         fr = fopen(path, "r");
     }
-    while(loadFile(path, fr));
+    while(fr == NULL);
     
     printf("\n");
     fclose(fr);

@@ -1,17 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "arvore.h"
 #include "binario.h"
 
 int main() {
   FILE* frw;
-  int opcao;
+  int opcao, num;
 
   //Cria o arquivo se ele nao existir
-  frw = openBin("./dados.bin");
+  frw = openBin();
   fclose(frw);
   
   do {
-      printf("Menu:\n");
+      printf("\nMenu:\n");
       printf("1 - Cadastrar produto\n");
       printf("2 - Remover produto\n");
       printf("3 - Atualizar preco\n");
@@ -30,28 +31,33 @@ int main() {
               cadastraProduto();
               break;
           case 2: //remove
-              
+              //busca pelo id
+              //remove do filho do no pai
+              //coloca o reg no cabecalho
               break;
           case 3: //atualiza preco
-              
+              atualizaPreco();
               break;
           case 4: //atualiza estoque
-              
+              atualizaEstoque();
               break;
           case 5: //imprime info
-              
+              printf("Digite o ID do produto a ser buscado: ");
+              scanf("%d",&num);
+              imprimeProduto(num);
               break;
-          case 6: //imprime todos produtor
-              
+          case 6: //imprime todos produtos
+              lerProdutos();
               break;
           case 7: //imprime arvore binaria
               
               break;
           case 8: //imprime lista de livres
-
+                //imprime a partir da raiz da arvore dos livres
+                //pode utilizar o filho a esq pra indicar prox
               break;
           case 9: //Operacao em lote
-
+                loadPath();
               break;
           case 0:
               printf("Saindo...\n");

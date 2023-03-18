@@ -9,12 +9,17 @@ typedef struct no {
   char categoria[51];
   int estoque;
   double preco;
-  struct no* esq;
-  struct no* dir;
+  int esq;
+  int dir;
 }Produto;
 
 void insereProduto();
 void cadastraProduto();
-
+void lerProdutos();
+Produto* buscaProduto();
+void imprimeProduto();
+Produto *buscaNoAnt();
+void atualizaPreco();
+void atualizaEstoque();
 
 #endif //ARVORE_H
