@@ -25,6 +25,10 @@ void imprimeProduto();
 
 Produto *buscaNoAnt();
 
+void getInfoEstoque();
+
+void getInfoPreco();
+
 void atualizaPreco();
 
 void atualizaEstoque();

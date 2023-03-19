@@ -5,7 +5,8 @@
 
 int main() {
   FILE* frw;
-  int opcao, num;
+  int opcao, num, estq;
+  double prc;
 
   //Cria o arquivo se ele nao existir
   frw = openBin();
@@ -36,10 +37,10 @@ int main() {
               //coloca o reg no cabecalho
               break;
           case 3: //atualiza preco
-              atualizaPreco();
+              getInfoPreco();
               break;
           case 4: //atualiza estoque
-              atualizaEstoque();
+              getInfoEstoque();
               break;
           case 5: //imprime info
               printf("Digite o ID do produto a ser buscado: ");

@@ -81,9 +81,9 @@ void lerProdutos(){
   fclose(f);
 }
 
-void imprimeProduto(int num){
+void imprimeProduto(int info){
   FILE* f = openBin();
-  Produto* p = buscaProduto(f, num);
+  Produto* p = buscaProduto(f, info);
   if(p != NULL){
     printf("\nID: %d\n", p->id);
     printf("Nome: %s\n", p->nome);
@@ -93,7 +93,7 @@ void imprimeProduto(int num){
     printf("Preco: %.2lf\n\n", p->preco);
     free(p);
   }
-  else printf("Produto não encontrado! \n");
+  else printf("Produto com ID [%d] não encontrado! \n", info);
   fclose(f);
 }
 
@@ -103,6 +103,10 @@ Produto *buscaProduto(FILE* f, int info){
   cabecalho* cab = le_cabecalho(f);
   fseek(f, sizeof(Produto)*cab->pos_cabeca, SEEK_CUR);
   fread(p, sizeof(Produto), 1, f);
+  if(p->dir == 0 && p->esq == 0){
+    p->dir = -1;
+    p->esq = -1;
+  }
   while(p->dir != -1 || p->esq != -1){
     if(p->esq != -1 && info < p->id){ //esq
       fseek(f, sizeof(cabecalho) + sizeof(Produto)*p->esq, SEEK_SET);
@@ -138,76 +142,109 @@ Produto *buscaNoAnt(FILE* f, int info, int raiz){
   return p;
 }
 
-void atualizaPreco(){
-  FILE* f = openBin();
-  Produto* p;
-  int info;
+void getInfoEstoque(){
+  int num, estq;
   printf("Digite o ID do produto a ser editado: ");
-  scanf("%d", &info);
-  p = buscaProduto(f, info);
+  scanf("%d", &num);
+  printf("Digite o novo estoque do produto: ");
+  scanf("%d",&estq);
+  atualizaEstoque(num, estq);
+}
+
+void getInfoPreco(){
+  int num;
+  double prc;
+  printf("Digite o ID do produto a ser editado: ");
+  scanf("%d", &num);
+  printf("Digite o novo preco (utilize '.' em valores decimais): ");
+  scanf("%lf", &prc);
+  atualizaPreco(num, prc);
+}
+
+void atualizaPreco(int info, double price){
+  FILE* f = openBin();
+  Produto* p = buscaProduto(f, info);
   imprimeProduto(info);
   if(p != NULL){
-    double price;
-    printf("Digite o novo preco (utilize '.' em valores decimais): ");
-    scanf("%lf",&price);
     p->preco = price;
-    fseek(f, 0-sizeof(Produto), SEEK_CUR);
+    fseek(f, 0 - sizeof(Produto), SEEK_CUR);
     fwrite(p, sizeof(Produto), 1, f);
   }
+  else printf("ID [%d] nao existente! \n", info);
   fclose(f);
   free(p);
 }
 
-void atualizaEstoque(){
+void atualizaEstoque(int info, int stock){
   FILE* f = openBin();
-  Produto* p;
-  int info;
-  printf("Digite o ID do produto a ser editado: ");
-  scanf("%d", &info);
-  p = buscaProduto(f, info);
-  imprimeProduto(info);
+  Produto* p = buscaProduto(f, info);
   if(p != NULL){
-    int stock;
-    printf("Digite o novo estoque: ");
-    scanf("%d",&stock);
     p->estoque = stock;
     fseek(f, 0 - sizeof(Produto), SEEK_CUR);
     fwrite(p, sizeof(Produto), 1, f);
   }
+  else printf("ID [%d] nao existente! \n", info);
   fclose(f);
   free(p);
 }
 
 void incluiLote(FILE *fr){
-    char text[200], *aux, *pt;
+    char text[300], *aux = NULL, *pt = NULL;
     Produto *p = (Produto*) malloc(sizeof(Produto));
     while(fscanf(fr,"%[^\n]%*c", text) != EOF){
+      FILE* f = openBin();
       char* token = strtok(text,";"); //pega o tipo
       if(strcmp(token,"I") == 0){ //I;25;Leite;Parmalat;bebidas;358;7,70
         p->id = atoi(strtok(NULL,";"));
-        
         strcpy(p->nome,strtok(NULL,";"));
         strcpy(p->marca,strtok(NULL,";"));
         strcpy(p->categoria,strtok(NULL,";"));
-        for(pt = aux = strtok(NULL,";");*aux != 0; aux++) if(*aux == ',') *aux = '.';
-        insereProduto(p);
+        p->estoque = atoi(strtok(NULL,";"));
+        for(pt = aux = strtok(NULL,";"); *aux != 0; aux++) if(*aux == ',') *aux = '.';
+        p->preco = atof(pt);
+        p->esq = -1;
+        p->dir = -1;
+        Produto* aux = buscaProduto(f, p->id);
+        fclose(f);
+        if(aux == NULL){
+          insereProduto(p);
+          printf("Produto com ID [%d] cadastrado!\n", p->id);
+        }
+        else printf("ID [%d] ja existente! \n", p->id);
+        free(aux);
       }
-      else if(strcmp(token,"R") == 0){
-        beb->id = atoi(strtok(NULL,";"));
-        strcpy(beb->nome,strtok(NULL,";"));
-        strcpy(beb->disp,strtok(NULL,";"));
-        for(p = aux = strtok(NULL,";");*aux != 0; aux++) if(*aux == ',') *aux = '.';
-        beb->preco = atof(p);
-        gravaBebida(beb);
-      }
+      
+      /*else if(strcmp(token,"R") == 0){
+        int info;
+        info = atoi(strtok(NULL,";"));
+        //removeProduto(info);
+      }*/
+      
       else if(strcmp(token,"A") == 0){
-        ex->id = atoi(strtok(NULL,";"));
-        strcpy(ex->nome,strtok(NULL,";"));
-        strcpy(ex->disp,strtok(NULL,";"));
-        for(p = aux = strtok(NULL,";");*aux != 0; aux++) if(*aux == ',') *aux = '.';
-        ex->preco = atof(p);
-        gravaExtra(ex);
+        int info;
+        char aux1[16] = "", aux2[16] = "", *ptr = text;
+        ptr += 2;
+        sscanf(ptr, "%d", &p->id);
+        ptr = &ptr[strcspn(ptr,";") + 1];
+        sscanf(ptr,"%[^;]",aux1);
+        ptr = &ptr[strcspn(ptr,";") + 1];
+        sscanf(ptr,"%[^\n]",aux2);
+        if(strcmp(aux1,"")){
+          atualizaEstoque(p->id, atoi(aux1));
+        }
+        if(strcmp(aux2,"")){
+          for(ptr = aux2; *ptr != 0; ptr++) if(*ptr == ',') *ptr = '.';
+          atualizaPreco(p->id, atof(aux2));
+        }
+        
+        fclose(f);
       }
+        
+      else{
+        printf("Entrada não reconhecida! \n");
+        fclose(f);
+      }
+      
     }
   free(p);
 }
