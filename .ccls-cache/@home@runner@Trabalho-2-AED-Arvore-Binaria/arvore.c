@@ -63,22 +63,34 @@ void insereProduto(Produto* p){
   free(cab);
 }
 
+void imprimePorNivel(){
+  //
+  
+}
+
 void lerProdutos(){
-  Produto* p = (Produto*) malloc(sizeof(Produto));
+  Produto p;
   FILE* f = openBin();
-  fseek(f, sizeof(cabecalho), SEEK_SET);
-  while(fread(p, sizeof(Produto), 1, f) != 0) {
-    printf("\nID: %d\n", p->id);
-    printf("Nome: %s\n", p->nome);
-    printf("Marca: %s\n", p->marca);
-    printf("Categoria: %s\n", p->categoria);
-    printf("Estoque: %d\n", p->estoque);
-    printf("Preco: %.2lf\n", p->preco);
-    printf("Filho a direita: %d\n", p->dir);
-    printf("Filho a esquerda: %d\n\n", p->esq);
-  }
-  free(p);
+  cabecalho *cab = le_cabecalho(f);
+  fseek(f, sizeof(cabecalho) + sizeof(Produto)*cab->pos_cabeca, SEEK_SET);
+  fread(&p, sizeof(Produto), 1, f);
+  lerProdutos_rec(&p, f, cab->pos_cabeca);
+  free(cab);
   fclose(f);
+}
+
+void lerProdutos_rec(Produto p, FILE* f, int raiz){
+  if(raiz == -1) return;
+  fseek(f, sizeof(cabecalho) + sizeof(Produto)*raiz, SEEK_SET);
+  fread(&p, sizeof(Produto), 1, f);
+  if(p.esq != -1){
+    lerProdutos_rec(p, f, p.esq);
+  }
+  printf("%d ", p.id);
+  printf("");
+  if(p.dir != -1){
+    lerProdutos_rec(p, f, p.dir);
+  }
 }
 
 void imprimeProduto(int info){
@@ -93,7 +105,7 @@ void imprimeProduto(int info){
     printf("Preco: %.2lf\n\n", p->preco);
     free(p);
   }
-  else printf("Produto com ID [%d] não encontrado! \n", info);
+  else printf("\nProduto com ID [%d] não encontrado! \n", info);
   fclose(f);
 }
 

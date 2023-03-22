@@ -10,6 +10,16 @@ typedef struct {
     int pos_livre; // posicao do inıcio da lista de nos livres
 } cabecalho;
 
+struct nof {
+int info;
+struct nof* prox;
+};
+
+typedef struct {
+struct nof* inicio;
+struct nof* fim;
+}Fila;
+
 //Le o cabecalho do arquivo contendo as informacoes da lista
 //Pre-condicao: arquivo deve estar aberto e ser um arquivo de lista
 //Pos-condicao: retorna o ponteiro para o cabecalho lido

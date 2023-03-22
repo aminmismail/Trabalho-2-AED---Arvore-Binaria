@@ -5,8 +5,7 @@
 
 int main() {
   FILE* frw;
-  int opcao, num, estq;
-  double prc;
+  int opcao, num;
 
   //Cria o arquivo se ele nao existir
   frw = openBin();
@@ -50,15 +49,15 @@ int main() {
           case 6: //imprime todos produtos
               lerProdutos();
               break;
-          case 7: //imprime arvore binaria
-              
+          case 7: //imprime arvore binaria por nivel
+              imprimePorNivel();
               break;
           case 8: //imprime lista de livres
                 //imprime a partir da raiz da arvore dos livres
                 //pode utilizar o filho a esq pra indicar prox
               break;
           case 9: //Operacao em lote
-                loadPath();
+              loadPath();
               break;
           case 0:
               printf("Saindo...\n");

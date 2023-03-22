@@ -82,3 +82,7 @@ void loadPath(){
     fclose(fr);
 }
 
+// Testa se a fila esta vazia
+int vazia(Fila* f){
+  return (f->inicio == f->fim);
+}

@@ -35,5 +35,9 @@ void atualizaEstoque();
 
 void incluiLote();
 
+void imprimePorNivel();
+
+void lerProdutos_rec();
+
 
 #endif //ARVORE_H
