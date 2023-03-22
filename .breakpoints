@@ -1,3 +1,18 @@
 {
-  "files": {}
+  "files": {
+    "arvore.c": [
+      {
+        "id": "1de8add7-e5a1-4ecd-a5ec-69c23508d4e8",
+        "line": 82,
+        "version": 7860,
+        "index": 2358
+      },
+      {
+        "id": "5c0e5871-d8ed-4235-9fcb-e98330ed7c61",
+        "line": 94,
+        "version": 7860,
+        "index": 2670
+      }
+    ]
+  }
 }

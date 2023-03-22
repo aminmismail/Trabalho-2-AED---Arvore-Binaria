@@ -45,5 +45,17 @@ void loadPath();
 //Pos-condicao: Retorna o ponteiro para o arquivo binario
 FILE* openBin();
 
+//Verifica se a fila é vazia
+int vazia();
+
+//Cria uma fila vazia
+Fila* cria_fila_vazia();
+
+//Enfileira um elemento
+void enqueue();
+
+//Desenfileira um elemento
+int dequeue();
+
 
 #endif //BINARIO_H

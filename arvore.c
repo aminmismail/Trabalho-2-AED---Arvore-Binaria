@@ -64,8 +64,42 @@ void insereProduto(Produto* p){
 }
 
 void imprimePorNivel(){
-  //
-  
+  //cria fila
+  //enqueue raiz e NULL
+  //le o que tem na fila e da queue nos filhos esq e dir e insere NULL
+  //quando NULL, pula linha
+  //fazer enquanto raiz != -1
+  Produto* p = (Produto*) malloc(sizeof(Produto));
+  FILE* f = openBin();
+  cabecalho* cab = le_cabecalho(f);
+  Fila* fila = cria_fila_vazia();
+  int curID, curesq, curdir;
+  if(cab->pos_cabeca == -1) return;
+  fseek(f, sizeof(Produto)*cab->pos_cabeca, SEEK_CUR);
+  fread(p, sizeof(Produto), 1, f);
+  enqueue(fila, p->id);
+  enqueue(fila, -1);
+  while(fila != NULL){
+    curID = dequeue(fila);
+    fseek(f, sizeof(cabecalho) + sizeof(Produto)*curID, SEEK_SET);
+    fread(p, sizeof(Produto),1,f);
+    printf("%d", p->id);
+    if(p->esq != -1){
+      enqueue(fila, p->esq);
+    }
+    if(p->dir != -1){
+      enqueue(fila, p->dir);
+    }
+    if(curID == -1){
+      printf("\n");
+      if(!vazia(fila)) enqueue(fila, -1);
+    }
+  }
+
+  fclose(f);
+  free(p);
+  free(cab);
+  free(fila);
 }
 
 void lerProdutos(){
@@ -86,8 +120,8 @@ void lerProdutos_rec(Produto p, FILE* f, int raiz){
   if(p.esq != -1){
     lerProdutos_rec(p, f, p.esq);
   }
-  printf("%d ", p.id);
-  printf("");
+  printf("\nID: %d\n", p.id);
+  printf("Nome: %s\n",p.nome);
   if(p.dir != -1){
     lerProdutos_rec(p, f, p.dir);
   }
