@@ -8,7 +8,7 @@
 //Pos-condicao: arquivo e inicializado com uma lista vazia
 void cria_lista_vazia(FILE* arq){
   cabecalho * cab = (cabecalho*) malloc(sizeof(cabecalho));
-  cab->pos_cabeca = 0;
+  cab->pos_cabeca = -1;
   cab->pos_topo = 0;
   cab->pos_livre = -1;
   escreve_cabecalho(arq,cab);
@@ -83,8 +83,8 @@ void loadPath(){
 }
 
 // Testa se a fila esta vazia
-int vazia(Fila* f){
-  return (f->inicio == f->fim);
+int vazia(Fila* f) {
+  return (f->inicio == NULL);
 }
 
 //Cria uma fila vazia
@@ -116,6 +116,7 @@ int dequeue(Fila* f) {
     if(f->inicio == f->fim) // so tem 1 elemento
       f->fim = NULL;
     f->inicio = f->inicio->prox;
+    if(f->fim == NULL && f->inicio != NULL) f->inicio = NULL;
     free(aux);
     return x;
     }

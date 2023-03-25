@@ -39,5 +39,13 @@ void imprimePorNivel();
 
 void lerProdutos_rec();
 
+Produto* menorMaior();
+
+Produto* maiorMenor();
+
+void removeProduto();
+
+void imprimeLivres();
+
 
 #endif //ARVORE_H

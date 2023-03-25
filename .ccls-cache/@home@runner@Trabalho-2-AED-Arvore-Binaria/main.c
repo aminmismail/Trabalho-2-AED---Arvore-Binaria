@@ -31,9 +31,9 @@ int main() {
               cadastraProduto();
               break;
           case 2: //remove produto
-              //busca pelo id
-              //remove do filho do no pai
-              //coloca o reg no cabecalho
+              printf("Digite o ID do produto a ser removido: ");
+              scanf("%d",&num);
+              removeProduto(num);
               break;
           case 3: //atualiza preco
               getInfoPreco();
@@ -53,8 +53,7 @@ int main() {
               imprimePorNivel();
               break;
           case 8: //imprime lista de livres
-                //imprime a partir da raiz da arvore dos livres
-                //pode utilizar o filho a esq pra indicar prox
+              imprimeLivres();
               break;
           case 9: //Operacao em lote
               loadPath();
