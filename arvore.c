@@ -76,93 +76,108 @@ void insereProduto(Produto *p) {
 //Pre-condicao: ID do produto existente a ser removido
 //Pos-condicao: Produto removido e nó liberado
 void removeProduto(int info) {
-  FILE *f = openBin();
-  cabecalho *cab = le_cabecalho(f);
-  Produto *p = buscaProduto(f, info);
-  if (p == NULL) {
-    printf("Elemento não encontrado!\n");
-    return;
-  }
-  Produto *aux = buscaNoAnt(f, p->id, cab->pos_cabeca);
-  
-  if (p->dir == -1 && p->esq == -1 && aux == NULL){ //Raiz sem filhos
-    cab->pos_livre = 0;
-    cab->pos_cabeca = -1;
-  }
-    
-  else if (p->dir == -1 && p->esq == -1) { // Nó é folha
-    p->esq = cab->pos_livre;
-    fseek(f, 0 - sizeof(Produto), SEEK_CUR); // Volta ao comeco do produto p
-    fwrite(p, sizeof(Produto), 1, f);
-    if (p->id > aux->id) { // caso nó removido for menor que o pai
-      cab->pos_livre = aux->dir;
-      aux->dir = -1;
+    FILE *f = openBin();
+    cabecalho *cab = le_cabecalho(f);
+    Produto *p = buscaProduto(f, info);
+    if (p == NULL) {
+        printf("Elemento não encontrado!\n");
+        return;
     }
-    if (p->id < aux->id) { // caso nó removido for maior que o pai
-      cab->pos_livre = aux->esq;
-      aux->esq = -1;
+    Produto *aux = buscaNoAnt(f, p->id, cab->pos_cabeca);
+    buscaProduto(f, info);
+    if (p->dir == -1 && p->esq == -1 && aux == NULL){ //Raiz sem filhos
+        cab->pos_livre = cab->pos_cabeca;
+        cab->pos_cabeca = -1;
     }
-    fseek(f, 0 - sizeof(Produto), SEEK_CUR); // Volta ao comeco do produto aux
-    fwrite(aux, sizeof(Produto), 1, f);
-    free(aux);
-  } 
-    
-  else { // tem filho a esquerda e/ou a direita
-    Produto *aux, *noAnt;
-    if (p->esq != -1) {
-      aux = maiorMenor(f, p);
-      noAnt = buscaNoAnt(f, aux->id, cab->pos_cabeca);
 
-      if (aux->id > noAnt->id) { // caso nó removido for maior que o pai
-        cab->pos_livre = noAnt->dir;
-        noAnt->dir = aux->esq;
-        // reescreve o noAnt em seu lugar
-        buscaProduto(f, noAnt->id);
-        fseek(f, 0 - sizeof(Produto), SEEK_CUR);
-        fwrite(noAnt, sizeof(Produto), 1, f);
-        aux->esq = p->esq;
-        aux->dir = p->dir;
-        buscaProduto(f, p->id);
-        fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+    else if (p->dir == -1 && p->esq == -1) { // Nó é folha
+        p->esq = cab->pos_livre;
+        fseek(f, 0 - sizeof(Produto), SEEK_CUR); // Volta ao comeco do produto p
+        fwrite(p, sizeof(Produto), 1, f);
+        if (p->id > aux->id) { // caso nó removido for menor que o pai
+            cab->pos_livre = aux->dir;
+            aux->dir = -1;
+        }
+        if (p->id < aux->id) { // caso nó removido for maior que o pai
+            cab->pos_livre = aux->esq;
+            aux->esq = -1;
+        }
+        buscaProduto(f, aux->id);
+        fseek(f, 0 - sizeof(Produto), SEEK_CUR); // Volta ao comeco do produto aux
         fwrite(aux, sizeof(Produto), 1, f);
-      }
-      if (aux->id < noAnt->id) { // caso nó removido for menor que o pai
-        cab->pos_livre = noAnt->esq;
-        // considera noAnt como o nó a ser removido
-        aux->dir = p->dir;
-        buscaProduto(f, p->id);
-        fseek(f, 0 - sizeof(Produto), SEEK_CUR);
-        fwrite(aux, sizeof(Produto), 1, f);
-      }
+        free(aux);
     }
-    else if (p->dir != -1) {
-      aux = menorMaior(f, p);
-      noAnt = buscaNoAnt(f, aux->id, cab->pos_cabeca);
 
-      if (aux->id > noAnt->id) { // caso nó removido for maior que o pai
-        cab->pos_livre = noAnt->dir;
-        // considera noAnt como o nó a ser removido
-        aux->esq = p->esq;
-        buscaProduto(f, p->id);
-        fseek(f, 0 - sizeof(Produto), SEEK_CUR);
-        fwrite(aux, sizeof(Produto), 1, f);
-      }
+    else { // tem filho a esquerda e/ou a direita
+        Produto *aux, *noAnt;
+        if (p->esq != -1) { //subarvore esquerda
+            aux = maiorMenor(f, p);
+            noAnt = buscaNoAnt(f, aux->id, cab->pos_cabeca);
 
-      if (aux->id < noAnt->id) { // caso nó removido for menor que o pai
-        cab->pos_livre = noAnt->esq;
-        noAnt->esq = aux->dir;
-        buscaProduto(f, noAnt->id);
-        fseek(f, 0 - sizeof(Produto), SEEK_CUR);
-        fwrite(noAnt, sizeof(Produto), 1, f);
-        aux->esq = p->esq;
-        aux->dir = p->dir;
-        buscaProduto(f, p->id);
-        fseek(f, 0 - sizeof(Produto), SEEK_CUR);
-        fwrite(aux, sizeof(Produto), 1, f);
-      }
-      free(aux);
+            if (aux->id > noAnt->id) { // caso nó removido for maior que o pai
+                int temp = cab->pos_livre;
+                cab->pos_livre = noAnt->dir;
+                noAnt->dir = aux->esq;
+                // reescreve o noAnt em seu lugar
+                buscaProduto(f, noAnt->id);
+                fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+                fwrite(noAnt, sizeof(Produto), 1, f);
+                aux->esq = temp;
+                fseek(f, sizeof(cabecalho) + sizeof(Produto)*cab->pos_livre, SEEK_SET);
+                fwrite(aux, sizeof(Produto), 1, f);
+                aux->esq = p->esq;
+                aux->dir = p->dir;
+                buscaProduto(f, p->id);
+                fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+                fwrite(aux, sizeof(Produto), 1, f);
+            }
+            if (aux->id < noAnt->id) { // caso nó removido for menor que o pai
+                aux->esq = cab->pos_livre;
+                cab->pos_livre = noAnt->esq;
+                fseek(f, sizeof(cabecalho) + sizeof(Produto)*cab->pos_livre, SEEK_SET);
+                fwrite(aux, sizeof(Produto), 1, f);
+                // considera noAnt como o nó a ser removido
+                aux->dir = p->dir;
+                buscaProduto(f, p->id);
+                fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+                fwrite(aux, sizeof(Produto), 1, f);
+            }
+        }
+        else if (p->dir != -1) { //subarvore direita
+            aux = menorMaior(f, p);
+            noAnt = buscaNoAnt(f, aux->id, cab->pos_cabeca);
+
+            if (aux->id > noAnt->id) { // caso nó removido for maior que o pai
+                cab->pos_livre = noAnt->dir;
+                aux->esq = cab->pos_livre;
+                fseek(f, sizeof(cabecalho) + sizeof(Produto)*cab->pos_livre, SEEK_SET);
+                fwrite(aux, sizeof(Produto), 1, f);
+                // considera noAnt como o nó a ser removido
+                aux->esq = p->esq;
+                buscaProduto(f, p->id);
+                fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+                fwrite(aux, sizeof(Produto), 1, f);
+            }
+
+            if (aux->id < noAnt->id) { // caso nó removido for menor que o pai
+                int temp = cab->pos_livre;
+                cab->pos_livre = noAnt->esq;
+                noAnt->esq = aux->dir;
+                buscaProduto(f, noAnt->id);
+                fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+                fwrite(noAnt, sizeof(Produto), 1, f);
+                aux->esq = temp;
+                fseek(f, sizeof(cabecalho) + sizeof(Produto)*cab->pos_livre, SEEK_SET);
+                fwrite(aux, sizeof(Produto), 1, f);
+                aux->esq = p->esq;
+                aux->dir = p->dir;
+                buscaProduto(f, p->id);
+                fseek(f, 0 - sizeof(Produto), SEEK_CUR);
+                fwrite(aux, sizeof(Produto), 1, f);
+            }
+            free(aux);
+        }
     }
-  }
     printf("Produto com ID [%d] removido!\n", info);
     escreve_cabecalho(f, cab);
     free(p);
@@ -268,7 +283,6 @@ void imprimePorNivel() {
 //Pre-condicao: Produtos cadastrados no arquivo binario
 //Pos-condicao: Imprime a árvore in-ordem
 void lerProdutos() {
-  Produto p;
   FILE *f = openBin();
   cabecalho *cab = le_cabecalho(f);
   if (cab->pos_cabeca == -1) {
@@ -277,9 +291,7 @@ void lerProdutos() {
     fclose(f);
     return;
   }
-  fseek(f, sizeof(cabecalho) + sizeof(Produto) * cab->pos_cabeca, SEEK_SET);
-  fread(&p, sizeof(Produto), 1, f);
-  lerProdutos_rec(&p, f, cab->pos_cabeca);
+  lerProdutos_rec(f, cab->pos_cabeca);
   free(cab);
   fclose(f);
 }
@@ -287,20 +299,21 @@ void lerProdutos() {
 //Realiza a impressão da arvore in-ordem
 //Pre-condicao: Produtos cadastrados no arquivo binario
 //Pos-condicao: Impressão da arvore in-ordem
-void lerProdutos_rec(Produto p, FILE *f, int raiz) {
+void lerProdutos_rec(FILE *f, int raiz) {
+  Produto p;
   if (raiz == -1)
     return;
   fseek(f, sizeof(cabecalho) + sizeof(Produto) * raiz, SEEK_SET);
   fread(&p, sizeof(Produto), 1, f);
   if (p.esq != -1) {
-    lerProdutos_rec(p, f, p.esq);
+    lerProdutos_rec(f, p.esq);
   }
   printf("\nID: %d\n", p.id);
   printf("Nome: %s\n", p.nome);
   printf("Esquerda: %d\n", p.esq);
   printf("Direita: %d\n", p.dir);
   if (p.dir != -1) {
-    lerProdutos_rec(p, f, p.dir);
+    lerProdutos_rec(f, p.dir);
   }
 }
 
