@@ -82,12 +82,16 @@ void loadPath(){
     fclose(fr);
 }
 
-// Testa se a fila esta vazia
+//Verifica se a fila é vazia
+//Pre-condicao: Fila existente
+//Pos-condicao: Retorna se existe itens 
 int vazia(Fila* f) {
   return (f->inicio == NULL);
 }
 
 //Cria uma fila vazia
+//Pre-condicao: Nenhuma
+//Pos-condicao: Retorna uma fila vazia
 Fila* cria_fila_vazia() {
   Fila* f = (Fila*) malloc(sizeof(Fila));
   f->inicio = NULL;
@@ -95,7 +99,9 @@ Fila* cria_fila_vazia() {
   return f;
   }
 
-//Enfileira um elemento
+//Enfileira um item na fila
+//Pre-condicao: Fila existente e um item
+//Pos-condicao: Enfileira o item
 void enqueue(Fila* f, int x) {
   struct nof* aux = (struct nof*) malloc(sizeof(struct nof));
   aux->info = x;
@@ -107,7 +113,9 @@ void enqueue(Fila* f, int x) {
   f->fim = aux;
 }
 
-//Desenfileira um elemento
+//Desenfileira um item da fila
+//Pre-condicao: Fila existente
+//Pos-condicao: Retorna o item desenfileirado
 int dequeue(Fila* f) {
   if(!vazia(f)) {
     int x;

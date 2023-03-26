@@ -23,17 +23,17 @@ struct nof* fim;
 //Le o cabecalho do arquivo contendo as informacoes da lista
 //Pre-condicao: arquivo deve estar aberto e ser um arquivo de lista
 //Pos-condicao: retorna o ponteiro para o cabecalho lido
-cabecalho* le_cabecalho(FILE * arq);
+cabecalho* le_cabecalho();
 
 //Cria uma lista nova em arquivo
 //Pre-condicao: arquivo aberto para leitura/escrita
 //Pos-condicao: arquivo inicializado com uma lista vazia
-void cria_lista_vazia(FILE* arq);
+void cria_lista_vazia();
 
 //Escreve no arquivo o cabecalho contendo as informacoes da lista
 //Pre-condicao: arquivo deve estar aberto e ser um arquivo de lista
 //Pos-condicao: cabecalho escrito no arquivo
-void escreve_cabecalho(FILE* arq, cabecalho* cab);
+void escreve_cabecalho();
 
 //Le o caminho do arquivo passado por input, e cadastra os itens nele
 //Pre-condicao: Um caminho para um arquivo existente
@@ -46,15 +46,23 @@ void loadPath();
 FILE* openBin();
 
 //Verifica se a fila é vazia
+//Pre-condicao: Fila existente
+//Pos-condicao: Retorna se existe itens 
 int vazia();
 
 //Cria uma fila vazia
+//Pre-condicao: Nenhuma
+//Pos-condicao: Retorna uma fila vazia
 Fila* cria_fila_vazia();
 
-//Enfileira um elemento
+//Enfileira um item na fila
+//Pre-condicao: Fila existente e um item
+//Pos-condicao: Enfileira o item
 void enqueue();
 
-//Desenfileira um elemento
+//Desenfileira um item da fila
+//Pre-condicao: Fila existente
+//Pos-condicao: Retorna o item desenfileirado
 int dequeue();
 
 
