@@ -53,8 +53,7 @@ void insereProduto(Produto *p) {
   }
   fseek(f, sizeof(cabecalho) + sizeof(Produto) * pos_reg, SEEK_SET);
   fwrite(p, sizeof(Produto), 1, f);
-  if (cab->pos_cabeca == -1)
-    cab->pos_cabeca = 0;
+  if (cab->pos_cabeca == -1) cab->pos_cabeca = 0;
   if (pos_reg != cab->pos_cabeca) {
     Produto *aux = (Produto *)malloc(sizeof(Produto));
     // buscaNoAnt e escreve o filho esq ou dir
@@ -84,11 +83,17 @@ void removeProduto(int info) {
     printf("Elemento não encontrado!\n");
     return;
   }
-  if (p->dir == -1 && p->esq == -1) { // Nó é folha
+  Produto *aux = buscaNoAnt(f, p->id, cab->pos_cabeca);
+  
+  if (p->dir == -1 && p->esq == -1 && aux == NULL){ //Raiz sem filhos
+    cab->pos_livre = 0;
+    cab->pos_cabeca = -1;
+  }
+    
+  else if (p->dir == -1 && p->esq == -1) { // Nó é folha
     p->esq = cab->pos_livre;
     fseek(f, 0 - sizeof(Produto), SEEK_CUR); // Volta ao comeco do produto p
     fwrite(p, sizeof(Produto), 1, f);
-    Produto *aux = buscaNoAnt(f, p->id, cab->pos_cabeca);
     if (p->id > aux->id) { // caso nó removido for menor que o pai
       cab->pos_livre = aux->dir;
       aux->dir = -1;
@@ -100,7 +105,9 @@ void removeProduto(int info) {
     fseek(f, 0 - sizeof(Produto), SEEK_CUR); // Volta ao comeco do produto aux
     fwrite(aux, sizeof(Produto), 1, f);
     free(aux);
-  } else { // tem filho a esquerda e/ou a direita
+  } 
+    
+  else { // tem filho a esquerda e/ou a direita
     Produto *aux, *noAnt;
     if (p->esq != -1) {
       aux = maiorMenor(f, p);
@@ -127,8 +134,8 @@ void removeProduto(int info) {
         fseek(f, 0 - sizeof(Produto), SEEK_CUR);
         fwrite(aux, sizeof(Produto), 1, f);
       }
-
-    } else if (p->dir != -1) {
+    }
+    else if (p->dir != -1) {
       aux = menorMaior(f, p);
       noAnt = buscaNoAnt(f, aux->id, cab->pos_cabeca);
 
@@ -155,12 +162,12 @@ void removeProduto(int info) {
       }
       free(aux);
     }
+  }
     printf("Produto com ID [%d] removido!\n", info);
     escreve_cabecalho(f, cab);
     free(p);
     free(cab);
     fclose(f);
-  }
 }
 
 //Retorna o menor valor dos maiores da sub arvore
@@ -224,8 +231,10 @@ void imprimePorNivel() {
   cabecalho *cab = le_cabecalho(f);
   Fila *fila = cria_fila_vazia();
   int curID;
-  if (cab->pos_cabeca == -1)
+  if (cab->pos_cabeca == -1){
+    printf("Não existem produtos !\n");
     return;
+  }
   fseek(f, sizeof(Produto) * cab->pos_cabeca, SEEK_CUR);
   fread(p, sizeof(Produto), 1, f);
   enqueue(fila, p->id);
@@ -321,7 +330,7 @@ void imprimeProduto(int info) {
 //Pos-condicao: Infos do produto carregada no struct produto
 Produto *buscaProduto(FILE *f, int info) {
   cabecalho *cab = le_cabecalho(f);
-  if (feof(f))
+  if (feof(f) || cab->pos_cabeca == -1)
     return NULL;
   Produto *p = (Produto *)malloc(sizeof(Produto));
   fseek(f, sizeof(Produto) * cab->pos_cabeca, SEEK_CUR);
