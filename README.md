@@ -1,11 +1,8 @@
 # Trabalho-2-AED---Arvore-Binaria
 
-Alunos: Amin Mhamad Ismail
-
-        Juliet A. de O. Rigoti
-        
-        Matheus Prokopowiski dos Santos
-        
+Alunos: Amin Mhamad Ismail<br>
+        Juliet A. de O. Rigoti<br>
+        Matheus Prokopowiski dos Santos<br>
 
 O programa tem como propósito funcionar como um software gerenciador de produtos de uma loja, onde cada produto tem as seguintes informações:
 - ID: número de identificação de cada produto
